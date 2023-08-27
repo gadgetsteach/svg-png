@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SVG to Image Converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    #svgContainer {
+      margin: 20px auto;
+      max-width: 50%; /* Make the SVG container responsive */
+    }
+    #svgContainer svg {
+      width: 50%; /* Make the SVG inside the container responsive */
+      height: auto; /* Maintain aspect ratio */
+    }
+    button {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    label {
+      font-size: 16px;
+      margin-right: 5px;
+    }
+    input[type="radio"] {
+      margin-right: 5px;
+    }
+    .format-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+    }
+    .format-labels {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    @media screen and (max-width: 768px) {
+      label,
+      button,
+      input[type="radio"] {
+        font-size: 18px; /* Increase font size on small devices */
+      }
+      button {
+        padding: 12px 24px; /* Slightly larger button size */
+      }
+      .format-labels {
+        margin-bottom: 15px; /* Increase spacing below format options */
+      }
+    }
+    @media screen and (max-width: 480px) {
+      #svgContainer {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>SVG to Image Converter</h1>
+  <input type="file" id="svgInput">
+  
+  <div class="format-container">
+    <div class="format-labels">
+      <label for="format">Image Format:</label>
+      <input type="radio" id="pngFormat" name="format" value="png" checked>
+      <label for="pngFormat">PNG</label>
+      <input type="radio" id="jpegFormat" name="format" value="jpeg">
+      <label for="jpegFormat">JPEG</label>
+      <input type="radio" id="webpFormat" name="format" value="webp">
+      <label for="webpFormat">WebP</label>
+    </div>
+    <button id="convertButton">Convert and Download</button>
+  </div>
+
+  <div id="svgContainer">
+    <!-- SVG content will be inserted here -->
+  </div>
+  
+  <script>
+    const svgInput = document.getElementById('svgInput');
+    const convertButton = document.getElementById('convertButton');
+    const pngFormat = document.getElementById('pngFormat');
+    const jpegFormat = document.getElementById('jpegFormat');
+    const webpFormat = document.getElementById('webpFormat');
+    const svgContainer = document.getElementById('svgContainer');
+
+    svgInput.addEventListener('change', event => {
+      const selectedFile = event.target.files[0];
+      if (selectedFile) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          svgContainer.innerHTML = event.target.result;
+        };
+        reader.readAsText(selectedFile);
+      }
+    });
+
+    convertButton.addEventListener('click', () => {
+      const svg = svgContainer.querySelector('svg');
+      if (svg) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+
+        img.onload = () => {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0);
+          canvas.toBlob(blob => {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.download = `image.${getSelectedFormat()}`;
+            link.href = url;
+            link.click();
+            URL.revokeObjectURL(url);
+          }, `image/${getSelectedFormat()}`);
+        };
+
+        const svgData = new XMLSerializer().serializeToString(svg);
+        img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgData);
+      }
+    });
+
+    function getSelectedFormat() {
+      if (pngFormat.checked) {
+        return 'png';
+      } else if (jpegFormat.checked) {
+        return 'jpeg';
+      } else if (webpFormat.checked) {
+        return 'webp';
+      }
+      // Add more format cases here
+      return 'png'; // Default to PNG
+    }
+  </script>
+</body>
+</html>

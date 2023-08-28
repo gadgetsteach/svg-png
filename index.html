@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>SVG to Image Converter</title>
   <style>
@@ -8,75 +9,134 @@
       text-align: center;
       padding: 20px;
     }
+
     #svgContainer {
       margin: 20px auto;
-      max-width: 50%; /* Make the SVG container responsive */
+      max-width: 50%;
+      /* Make the SVG container responsive */
     }
+
     #svgContainer svg {
-      width: 50%; /* Make the SVG inside the container responsive */
-      height: auto; /* Maintain aspect ratio */
+      width: 50%;
+      /* Make the SVG inside the container responsive */
+      height: auto;
+      /* Maintain aspect ratio */
     }
+
     button {
       display: block;
       margin: 20px auto;
       padding: 10px 20px;
-      background-color: #4CAF50;
+      background-color: #4caf50;
       color: white;
       border: none;
       border-radius: 4px;
       cursor: pointer;
       font-size: 16px;
     }
+
     label {
       font-size: 16px;
       margin-right: 5px;
     }
+
     input[type="radio"] {
       margin-right: 5px;
     }
+
     .format-container {
       display: flex;
       flex-direction: column;
       align-items: center;
       margin-top: 20px;
     }
+
     .format-labels {
       display: flex;
       align-items: center;
       margin-bottom: 10px;
     }
+
     @media screen and (max-width: 768px) {
+
       label,
       button,
       input[type="radio"] {
-        font-size: 18px; /* Increase font size on small devices */
+        font-size: 18px;
+        /* Increase font size on small devices */
       }
+
       button {
-        padding: 12px 24px; /* Slightly larger button size */
+        padding: 12px 24px;
+        /* Slightly larger button size */
       }
+
       .format-labels {
-        margin-bottom: 15px; /* Increase spacing below format options */
+        margin-bottom: 15px;
+        /* Increase spacing below format options */
       }
     }
+
     @media screen and (max-width: 480px) {
       #svgContainer {
         max-width: 100%;
       }
     }
+
+    .card-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .card {
+      width: calc(50% - 10px);
+      /* Adjust as needed */
+      background-color: #f5f5f5;
+      border: 1px solid #ddd;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-sizing: border-box;
+    }
+
+    @media (max-width: 767px) {
+      .card {
+        width: 100%;
+      }
+    }
+
+    .header {
+      background-color: #333;
+      color: #fff;
+      padding: 10px 0;
+      text-align: center;
+    }
+
+    .logo {
+      max-width: 100px;
+      height: auto;
+    }
   </style>
 </head>
+
 <body>
+  <div class="header">
+    <img class="logo" src="logo.png" alt="Logo">
+    <h1>Gadgets Teach</h1>
+  </div>
   <h1>SVG to Image Converter</h1>
-  <input type="file" id="svgInput">
-  
+  <input type="file" id="svgInput" />
+
   <div class="format-container">
     <div class="format-labels">
       <label for="format">Image Format:</label>
-      <input type="radio" id="pngFormat" name="format" value="png" checked>
+      <input type="radio" id="pngFormat" name="format" value="png" checked />
       <label for="pngFormat">PNG</label>
-      <input type="radio" id="jpegFormat" name="format" value="jpeg">
+      <input type="radio" id="jpegFormat" name="format" value="jpeg" />
       <label for="jpegFormat">JPEG</label>
-      <input type="radio" id="webpFormat" name="format" value="webp">
+      <input type="radio" id="webpFormat" name="format" value="webp" />
       <label for="webpFormat">WebP</label>
     </div>
     <button id="convertButton">Convert and Download</button>
@@ -85,40 +145,40 @@
   <div id="svgContainer">
     <!-- SVG content will be inserted here -->
   </div>
-  
-  <script>
-    const svgInput = document.getElementById('svgInput');
-    const convertButton = document.getElementById('convertButton');
-    const pngFormat = document.getElementById('pngFormat');
-    const jpegFormat = document.getElementById('jpegFormat');
-    const webpFormat = document.getElementById('webpFormat');
-    const svgContainer = document.getElementById('svgContainer');
 
-    svgInput.addEventListener('change', event => {
+  <script>
+    const svgInput = document.getElementById("svgInput");
+    const convertButton = document.getElementById("convertButton");
+    const pngFormat = document.getElementById("pngFormat");
+    const jpegFormat = document.getElementById("jpegFormat");
+    const webpFormat = document.getElementById("webpFormat");
+    const svgContainer = document.getElementById("svgContainer");
+
+    svgInput.addEventListener("change", (event) => {
       const selectedFile = event.target.files[0];
       if (selectedFile) {
         const reader = new FileReader();
-        reader.onload = function(event) {
+        reader.onload = function (event) {
           svgContainer.innerHTML = event.target.result;
         };
         reader.readAsText(selectedFile);
       }
     });
 
-    convertButton.addEventListener('click', () => {
-      const svg = svgContainer.querySelector('svg');
+    convertButton.addEventListener("click", () => {
+      const svg = svgContainer.querySelector("svg");
       if (svg) {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
         const img = new Image();
 
         img.onload = () => {
           canvas.width = img.width;
           canvas.height = img.height;
           ctx.drawImage(img, 0, 0);
-          canvas.toBlob(blob => {
+          canvas.toBlob((blob) => {
             const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
+            const link = document.createElement("a");
             link.download = `image.${getSelectedFormat()}`;
             link.href = url;
             link.click();
@@ -127,21 +187,143 @@
         };
 
         const svgData = new XMLSerializer().serializeToString(svg);
-        img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgData);
+        img.src =
+          "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgData);
       }
     });
 
     function getSelectedFormat() {
       if (pngFormat.checked) {
-        return 'png';
+        return "png";
       } else if (jpegFormat.checked) {
-        return 'jpeg';
+        return "jpeg";
       } else if (webpFormat.checked) {
-        return 'webp';
+        return "webp";
       }
       // Add more format cases here
-      return 'png'; // Default to PNG
+      return "png"; // Default to PNG
     }
   </script>
+
+  <div class="card-container">
+    <div class="card">
+      <h2>SVG to PNG Converter</h2>
+      <p>
+        Transform your scalable vector images into stunning PNG files
+        effortlessly through CloudConvert's advanced conversion technology.
+        Preserve every intricate detail and maintain transparency while
+        seamlessly scaling your vectors to any desired size—all without
+        sacrificing quality.
+      </p>
+    </div>
+    <div class="card">
+      <h2>Experience the Magic of Conversion</h2>
+      <ul>
+        <li>
+          Preserve Transparency: Our cutting-edge converter ensures that
+          transparency within your vector images remains intact.
+        </li>
+        <li>
+          Lossless Scaling: CloudConvert empowers you to scale your vectors to
+          any specific dimensions without compromising quality.
+        </li>
+        <li>
+          Unleash Versatility: Our SVG to PNG Converter opens doors to
+          limitless creative possibilities.
+        </li>
+        <li>
+          Web-Friendly and Beyond: Our PNG outputs are primed for every
+          scenario, offering technical finesse and SEO-friendly brilliance.
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="card-container">
+    <div class="card">
+      <h2>Experience the Magic of Conversion:</h2>
+      <p>
+        🎨 Preserve Transparency: Our cutting-edge converter ensures that
+        transparency within your vector images remains intact, resulting in
+        PNGs that seamlessly blend into any backdrop.
+      <h2>
+        🔍 Lossless Scaling:
+      </h2>
+      <p>
+        Say goodbye to pixelation woes! CloudConvert empowers you to scale your
+        vectors to any specific dimensions without compromising quality,
+        delivering flawless PNGs that captivate the eye.
+      </p>
+      <h2>
+        🚀 Unleash
+        Versatility:
+      </h2>
+      <p>
+
+        Whether you're looking to enhance your website, create
+        captivating presentations, or craft stunning visuals, our SVG to PNG
+        Converter opens doors to limitless creative possibilities.
+
+      </p>
+
+      <h2>
+        🌐
+        Web-Friendly and Beyond:
+      </h2>
+      <p>
+        From online platforms to print media, our PNG
+        outputs are primed for every scenario, offering a harmonious fusion of
+        technical finesse and SEO-friendly brilliance. Elevate Your Visual
+        Journey: Step into the world of CloudConvert's SVG to PNG Converter
+        and witness your graphics transform into masterpieces. With our
+        user-friendly interface and powerful technology, your images are no
+        longer limited by format constraints—instead, they become boundless
+        expressions of your creativity.
+
+      </p>
+      <p>
+        Join the conversion revolution today!"
+      </p>
+    </div>
+    <div class="card">
+      <h2>Optimize Your Graphics with SVG</h2>
+      <p>Scalable Vector Graphics (SVG) hold the power to transform your visual content. As a dynamic markup language,
+        SVG brings forth scalable vector graphics, meticulously crafted by the World Wide Web Consortium (W3C). Its
+        purpose? To elegantly depict two-dimensional vector and hybrid vector/raster graphics using XML. With support
+        for both animations and interactive graphics, SVG seamlessly merges with declarative scripting to enhance your
+        visual storytelling.</p>
+      <p>However, it's crucial to note that SVG doesn't cater to the portrayal of three-dimensional objects. Its
+        foundation draws from a fusion of markup languages, namely SVG, VML, and PGML, adding layers of depth to its
+        capabilities.</p>
+
+      <h2>Elevate Your Images with PNG Conversion</h2>
+      <p>Enter the realm of Portable Network Graphics (PNG), a raster graphic storage format meticulously engineered to
+        uphold image integrity. Through an ingenious lossless compression algorithm known as Deflate, PNG encapsulates
+        your visuals while preserving their pristine quality. This format arose as a liberating successor to GIF,
+        championing open accessibility and freedom.</p>
+      <p>The versatility of PNG extends to its accommodation of three primary types of raster images:</p>
+      <ul>
+        <li>Grayscale Images: Unleash captivating monochromatic visuals.</li>
+        <li>Color Indexed Images: Infuse vibrant palettes with precision.</li>
+        <li>Color Images: Harness the full spectrum of hues for captivating impact.</li>
+      </ul>
+
+      <h2>Effortless Conversion: SVG to PNG</h2>
+      <p>Converting your SVG files into PNG gems is simpler than ever with our user-friendly process:</p>
+      <p><strong>Step 1: Upload</strong><br>
+        Start by selecting your SVG files. You can effortlessly upload them from your Computer, Google Drive, Dropbox,
+        or even via URL. Alternatively, a quick drag-and-drop onto the page initiates the process.</p>
+      <p><strong>Step 2: Choose "PNG"</strong><br>
+        In this step, the choice is yours. Opt for PNG or explore more than 200 supported formats to suit your needs.
+      </p>
+      <p><strong>Step 3: Download Your PNG</strong><br>
+        As the conversion works its magic, anticipate the arrival of your transformed PNG file. The instant it's ready,
+        you can swiftly download and embrace your newly minted masterpiece.</p>
+
+      <p>Elevate your visuals with the harmonious blend of SVG's scalable finesse and PNG's compression prowess.
+        Seamlessly blend stunning graphics and seamless conversion today!</p>
+
+    </div>
+  </div>
 </body>
+
 </html>
